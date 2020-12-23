@@ -5,12 +5,13 @@ import './App.css';
 import { OverlayTrigger, Button, Popover } from 'react-bootstrap';
 
 import NavBar from './components/NavBar';
+import Main from './Main';
 
 function App() {
   return (
     <div className="App">
       <NavBar />
-      {/* <Main /> */}
+      <Main />
       <footer style={{ textAlign: 'left', paddingLeft: '5px' }}>
         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <Button variant="success">New Features 🎉</Button>
