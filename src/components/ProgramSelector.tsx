@@ -2,20 +2,50 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Form, Col, Button } from 'react-bootstrap';
-import Select, { ValueType, OptionTypeBase, ActionMeta } from 'react-select';
+import Select, { ValueType, OptionTypeBase, ActionMeta, OptionsType } from 'react-select';
 import AsyncSelect from 'react-select/async';
 
 import { getProgramList, getProgram } from '../apiCalls';
+import { Program } from '../types';
+
+enum SpecialisationType {
+    Majors = 'Majors',
+    Minors = 'Minors',
+    Honours = 'Honours',
+    Specialisations = 'Specialisations'
+}
 
 interface ProgramInput {
     code: string;
     year: string;
 }
 
+interface SelectedSpecialisations {
+    Majors: IndividualSpecialisation[]; 
+    Minors: IndividualSpecialisation[]; 
+    Honours: IndividualSpecialisation[]; 
+    Specialisations: IndividualSpecialisation[];
+}
+
+interface IndividualSpecialisation {
+    value: string;
+    label: string;
+}
+
 function ProgramSelector() {
     //==== State ====//
     const [programInput, setProgramInput] = useState<ProgramInput | undefined>(undefined);
     const [programError, setProgramError] = useState<string | undefined>('unset');
+    const [selectedProgram, setSelectedProgram] = useState<Program | undefined>(undefined);
+
+    const [selectedSpecialisations, setSelectedSpecialisations] = useState<SelectedSpecialisations>({
+        Majors: [],
+        Minors: [],
+        Honours: [],
+        Specialisations: [],
+    });
+    const [selectedSimplifiedSpecialisations, setSelectedSimplifiedSpecialisations] = useState<string[] | undefined>(undefined);
+    const [specialisationError, setSpecialisationError] = useState({});
     //==== End State ====//
 
     //==== Program selector helpers ====//
@@ -66,6 +96,7 @@ function ProgramSelector() {
             }
             else {
                 console.log('successfully added', program);
+                setSelectedProgram(program);
                 setProgramError('');
             }
         }
@@ -75,6 +106,60 @@ function ProgramSelector() {
     }
     //==== End program selector helpers ====//
 
+    //==== Specialisation helpers ====//
+    function Specialialisations() {
+        return (
+            <>
+                {selectedProgram && selectedProgram.Item.majors && SpecificSpecialisation(SpecialisationType.Majors, selectedProgram.Item.majors)}
+                {selectedProgram && selectedProgram.Item.minors && SpecificSpecialisation(SpecialisationType.Minors, selectedProgram.Item.minors)}
+                {selectedProgram && selectedProgram.Item.honours && SpecificSpecialisation(SpecialisationType.Honours, selectedProgram.Item.honours)}
+                {selectedProgram && selectedProgram.Item.specialisations && SpecificSpecialisation(SpecialisationType.Specialisations, selectedProgram.Item.specialisations)}
+            </>
+        )
+    }
+
+    function SpecificSpecialisation(specialisationType: SpecialisationType, specialisationList: string[]) {
+        const options: OptionsType<{value: string;label: string;}> | undefined = 
+        (specialisationList && specialisationList.length) ? specialisationList.map((spec) => {
+            return {
+                value: spec,
+                label: spec
+            }
+        })
+        :
+        undefined;
+
+        const placeholder = `Select ${specialisationType}`;
+        return (
+            <div className="form-group">
+                <Form>
+                    <Form.Group controlId="exampleForm.SelectCustom">
+                        <Form.Label>{specialisationType}</Form.Label>
+                        <Select isMulti options={options} onChange={(e) => { handleSpecialisationChange(e, specialisationType) }} value={selectedSpecialisations[specialisationType]} placeholder={placeholder} />
+                    </Form.Group>
+                </Form>
+            </div>
+        )
+    }
+
+    function handleSpecialisationChange(value: ValueType<OptionTypeBase, false>, name: string) {
+        console.log("value", value);
+
+        // Need to setSelected AND setSimplified in state because Select requires different format to props.getProgramRequirements
+        // const specialisationValues = value.map((spec) => { return spec.value });
+        // setSelectedSimplifiedSpecialisations(prevState => {
+        //     return { ...prevState, [name]: specialisationValues };
+        // });
+        // setSelectedSpecialisations(prevState => {
+        //     return { ...prevState, [name]: value };
+        // });
+        // setSpecialisationError(prevState => {
+        //     return { ...prevState, [name]: '' };
+        // });
+    }
+
+    //==== End specialisation helpers ====//
+    
     return (
         <div className="jumbotron">
             {/* Programs */}
@@ -93,7 +178,7 @@ function ProgramSelector() {
             </Form>
 
             {/* Specialisations */}
-
+            <Specialialisations />
 
             {/* Go */}
             {/* <Link to={{ pathname: "/results", initialRequirements: selectedProgram }}>
