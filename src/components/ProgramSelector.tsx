@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { Form, Col, Button } from 'react-bootstrap';
 import Select, { ValueType, OptionTypeBase, ActionMeta, OptionsType } from 'react-select';
@@ -7,6 +8,7 @@ import AsyncSelect from 'react-select/async';
 
 import { getProgramList, getProgram } from '../apiCalls';
 import { Program } from '../types';
+import { getProgramRequirements } from '../actions/requirementsAction';
 
 enum SpecialisationType {
     Majors = 'Majors',
@@ -32,7 +34,7 @@ interface IndividualSpecialisation {
     label: string;
 }
 
-function ProgramSelector() {
+function ProgramSelector(props: any) {
     //==== State ====//
     const [programInput, setProgramInput] = useState<ProgramInput | undefined>(undefined);
     const [programError, setProgramError] = useState<string | undefined>('unset');
@@ -165,7 +167,7 @@ function ProgramSelector() {
 
     //==== Go clicked helpers ====//
     async function goClicked() {
-        // props.getProgramRequirements(selectedProgram.item.Item.code.S, selectedProgram.item.Item.implementation_year.S, selectedSimplifiedSpecialisations);
+        props.getProgramRequirements(selectedProgram!.Item.code, selectedProgram!.Item.implementation_year, selectedSimplifiedSpecialisations)
         console.log("go clicked");
         console.log(selectedProgram?.Item.code);
         console.log(selectedProgram?.Item.implementation_year);
@@ -203,4 +205,17 @@ function ProgramSelector() {
     )
 }
 
-export default ProgramSelector;
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        getProgramRequirements: (code: string, implementation_year: string, specialisations: {
+            Majors: string[];
+            Minors: string[];
+            Honours: string[];
+            Specialisations: string[];
+        }[]) => {
+            dispatch(getProgramRequirements(code, implementation_year, specialisations))
+        }
+    }
+}
+
+export default connect(null, mapDispatchToProps)(ProgramSelector);

@@ -39,6 +39,11 @@ export function getProgramList(query: string): Promise<ReturnedProgram[]> {
     });
 }
 
+/**
+ * Get an individual program
+ * @param code 
+ * @param year 
+ */
 export function getProgram(code: string, year: string): Promise<Program | undefined> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -65,6 +70,48 @@ export function getProgram(code: string, year: string): Promise<Program | undefi
                 });
         } catch (ex) {
             console.log("EXCEPTION GETTING PROGRAM", ex);
+            reject(ex);
+        }
+    });
+}
+
+/**
+ * Return the requirements to be completed
+ * @param code 
+ * @param implementation_year 
+ * @param specialisations 
+ */
+export function getRequirements(code: string, implementation_year: string, specialisations: {
+    Majors: string[];
+    Minors: string[];
+    Honours: string[];
+    Specialisations: string[];
+}[]) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var postData = {
+                code, implementation_year, specialisations
+            }
+
+            var config: AxiosRequestConfig = {
+                method: 'post',
+                url: `${domain}/program/requirements`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: postData
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    console.log("AXIOS ERROR GETTING REQUIREMENTS", error);
+                    reject(error);
+                });
+        } catch (ex) {
+            console.log("EXCEPTION GETTING REQUIREMENTS", ex);
             reject(ex);
         }
     });
