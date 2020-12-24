@@ -148,25 +148,24 @@ function ProgramSelector() {
     }
 
     function handleSpecialisationChange(value: ValueType<OptionTypeBase, false>, name: string) {
+        // If no value, that means all specialisations have been removed, set to an empty array
+        if (!value) {
+            value = [];
+        }
+
         // Need to setSelected AND setSimplified in state because Select requires different format to props.getProgramRequirements
-        if (value) {
-            const specialisationValues: string[] = value.map((spec: IndividualSpecialisation) => { return spec.value });
+        const specialisationValues: string[] = value.map((spec: IndividualSpecialisation) => { return spec.value });
 
-            setSelectedSimplifiedSpecialisations(prevState => {
-                return { ...prevState, [name]: specialisationValues };
-            });
-            setSelectedSpecialisations(prevState => {
-                return { ...prevState, [name]: value };
-            });
+        setSelectedSimplifiedSpecialisations(prevState => {
+            return { ...prevState, [name]: specialisationValues };
+        });
+        setSelectedSpecialisations(prevState => {
+            return { ...prevState, [name]: value };
+        });
 
-            // Reset error message
-            setSpecialisationError('');
-        }
-        else {
-
-        }
+        // Reset error message
+        setSpecialisationError('');
     }
-
     //==== End specialisation helpers ====//
     
     return (
