@@ -50,7 +50,6 @@ function ProgramSelector() {
         Honours: [],
         Specialisations: []
     });
-    const [specialisationError, setSpecialisationError] = useState('');
     //==== End State ====//
 
     //==== Program selector helpers ====//
@@ -100,7 +99,6 @@ function ProgramSelector() {
                 setProgramError('Program not found');
             }
             else {
-                console.log('successfully added', program);
                 setSelectedProgram(program);
                 setProgramError('');
             }
@@ -162,11 +160,18 @@ function ProgramSelector() {
         setSelectedSpecialisations(prevState => {
             return { ...prevState, [name]: value };
         });
-
-        // Reset error message
-        setSpecialisationError('');
     }
     //==== End specialisation helpers ====//
+
+    //==== Go clicked helpers ====//
+    async function goClicked() {
+        // props.getProgramRequirements(selectedProgram.item.Item.code.S, selectedProgram.item.Item.implementation_year.S, selectedSimplifiedSpecialisations);
+        console.log("go clicked");
+        console.log(selectedProgram?.Item.code);
+        console.log(selectedProgram?.Item.implementation_year);
+        console.log(selectedSimplifiedSpecialisations);
+    }
+    const isGoDisabled = (programError || programError === 'unset') ? true : false;
     
     return (
         <div className="jumbotron">
@@ -189,11 +194,11 @@ function ProgramSelector() {
             <Specialialisations />
 
             {/* Go */}
-            {/* <Link to={{ pathname: "/results", initialRequirements: selectedProgram }}>
+            <Link to={{ pathname: "/results" }}>
                 <button onClick={() => { goClicked() }} type="submit" disabled={isGoDisabled} className="btn btn-primary">
                     Go
                 </button>
-            </Link> */}
+            </Link>
         </div>
     )
 }
