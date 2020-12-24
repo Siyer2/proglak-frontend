@@ -42,10 +42,15 @@ function ProgramSelector() {
         Majors: [],
         Minors: [],
         Honours: [],
-        Specialisations: [],
+        Specialisations: []
     });
-    const [selectedSimplifiedSpecialisations, setSelectedSimplifiedSpecialisations] = useState<string[] | undefined>(undefined);
-    const [specialisationError, setSpecialisationError] = useState({});
+    const [selectedSimplifiedSpecialisations, setSelectedSimplifiedSpecialisations] = useState({
+        Majors: [],
+        Minors: [],
+        Honours: [],
+        Specialisations: []
+    });
+    const [specialisationError, setSpecialisationError] = useState('');
     //==== End State ====//
 
     //==== Program selector helpers ====//
@@ -143,19 +148,23 @@ function ProgramSelector() {
     }
 
     function handleSpecialisationChange(value: ValueType<OptionTypeBase, false>, name: string) {
-        console.log("value", value);
-
         // Need to setSelected AND setSimplified in state because Select requires different format to props.getProgramRequirements
-        // const specialisationValues = value.map((spec) => { return spec.value });
-        // setSelectedSimplifiedSpecialisations(prevState => {
-        //     return { ...prevState, [name]: specialisationValues };
-        // });
-        // setSelectedSpecialisations(prevState => {
-        //     return { ...prevState, [name]: value };
-        // });
-        // setSpecialisationError(prevState => {
-        //     return { ...prevState, [name]: '' };
-        // });
+        if (value) {
+            const specialisationValues: string[] = value.map((spec: IndividualSpecialisation) => { return spec.value });
+
+            setSelectedSimplifiedSpecialisations(prevState => {
+                return { ...prevState, [name]: specialisationValues };
+            });
+            setSelectedSpecialisations(prevState => {
+                return { ...prevState, [name]: value };
+            });
+
+            // Reset error message
+            setSpecialisationError('');
+        }
+        else {
+
+        }
     }
 
     //==== End specialisation helpers ====//
