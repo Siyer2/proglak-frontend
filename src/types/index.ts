@@ -57,9 +57,18 @@ interface Requirements {
     limitRules?: any;
 }
 
+interface Rule {
+    courses?: any[];
+    credit_points?: string;
+    credit_points_max?: string;
+    description?: string;
+    url?: string;
+}
+
 export type {
     Course,
     Program,
     Specialisation, 
-    Requirements
+    Requirements, 
+    Rule
 }

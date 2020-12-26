@@ -1,6 +1,7 @@
 import { Accordion, Card } from 'react-bootstrap';
 
-import { Requirements } from '../types';
+import { Requirements, Rule } from '../types';
+import IndividualRule from './IndividualRule';
 
 interface RulesProps {
     requirements: Requirements;
@@ -11,7 +12,6 @@ interface RulesProps {
  * @param props 
  */
 function Rules(props: RulesProps) {
-    console.log("props", props);
     return (
         <Accordion defaultActiveKey="0">
             {props.requirements.coreCourses && props.requirements.coreCourses.length ? <RuleTypeContainer ruleName="Core Courses" requirements={props.requirements.coreCourses} eventKey={"0"} /> : null}
@@ -30,6 +30,13 @@ function Rules(props: RulesProps) {
  * Handle each rule type (e.g. coreCourses)
  */
 function RuleTypeContainer(props: {ruleName: string, requirements: any, eventKey: string}) {
+    // Map through each rule and render it
+    const displayRules = props.requirements.map((requirement: Rule, i: number) => {
+        return (
+            <IndividualRule key={i + props.ruleName} rule={requirement} ruleName={props.ruleName} index={i} />
+        )
+    });
+
     console.log("reqs", props.requirements);
     return (
         <Card>
@@ -40,7 +47,7 @@ function RuleTypeContainer(props: {ruleName: string, requirements: any, eventKey
             </Accordion.Toggle>
             <Accordion.Collapse eventKey={props.eventKey}>
                 <Card.Body>
-                    {/* {coreCourseOutputs} */}
+                    {displayRules}
                 </Card.Body>
             </Accordion.Collapse>
         </Card>
