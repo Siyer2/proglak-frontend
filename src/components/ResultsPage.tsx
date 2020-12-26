@@ -2,34 +2,18 @@ import React, { ReactElement } from 'react';
 import { connect } from 'react-redux';
 import {
     Jumbotron,
-    Container,
-    Accordion
+    Container
 } from 'react-bootstrap';
+import { Requirements } from '../types'
+import Rules from './Rules';
 
-interface Requirements {
-    code: string;
-    title: string;
-    minimumUOC: string;
-    implementation_year: string;
-    specialisations?: string[],
-    coreCourses?: any;
-    generalEducation?: any;
-    maturityRules?: any;
-    prescribedElectives?: any;
-    freeElectives?: any;
-    informationRules?: any;
-    oneOfTheFollowings?: any;
-    limitRules?: any;
-}
-
-function ResultsPage(props: any): ReactElement<any, any> {
+function ResultsPage(props: any): ReactElement {
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
         return (
             <NoSetProgram />
         )
     }
     else {
-        console.log("found", props.requirements.requirements);
         return (
             <>
                 {props.requirements.isGettingRequirements ?
@@ -59,6 +43,7 @@ function Results(props: any) {
     return (
         <div>
             <ResultsHeader requirements={resultHeaderProps} />
+            <Rules requirements={requirements} />
         </div>
     )
 }
@@ -91,6 +76,9 @@ function ResultsHeader(props: ResultsHeaderProps) {
     )
 }
 
+/**
+ * If no program is set
+ */
 function NoSetProgram() {
     return (
         <>

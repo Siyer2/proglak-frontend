@@ -41,8 +41,25 @@ interface Specialisation {
     [other: string]: any;
 }
 
+interface Requirements {
+    code: string;
+    title: string;
+    minimumUOC: string;
+    implementation_year: string;
+    specialisations?: string[],
+    coreCourses?: any;
+    generalEducation?: any;
+    maturityRules?: any;
+    prescribedElectives?: any;
+    freeElectives?: any;
+    informationRules?: any;
+    oneOfTheFollowings?: any;
+    limitRules?: any;
+}
+
 export type {
     Course,
     Program,
-    Specialisation
+    Specialisation, 
+    Requirements
 }
