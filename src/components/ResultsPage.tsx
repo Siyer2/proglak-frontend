@@ -1,11 +1,11 @@
 import React from 'react';
 
-function Results() {
+function ResultsPage() {
     return (
         <div>
-            results
+            ResultsPage
         </div>
     )
 }
 
-export default Results;
+export default ResultsPage;

@@ -1,13 +1,13 @@
 import { Switch, Route } from 'react-router-dom';
 
 import ProgramSelector from './components/ProgramSelector';
-import Results from './components/Results';
+import ResultsPage from './components/ResultsPage';
 
 const Main = () => {
     return (
         <Switch>
             <Route exact path={'/'} component={ProgramSelector}></Route>
-            <Route exact path={'/results'} component={Results}></Route>
+            <Route exact path={'/results'} component={ResultsPage}></Route>
         </Switch>
     )
 }
