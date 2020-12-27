@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { stripHtml } from '../helperFunctions';
 import { Rule } from '../types';
 import {
@@ -5,7 +7,8 @@ import {
     Tooltip, 
     Card, 
     ListGroup, 
-    Button
+    Button, 
+    Modal
 } from 'react-bootstrap';
 
 interface IndividualRuleProps {
@@ -35,7 +38,9 @@ function IndividualRule(props: IndividualRuleProps) {
                     {getRuleInstruction(props.rule)}
                 </Card.Title>
             </OverlayTrigger>
-            <Courses rule={props.rule} />
+            <Card.Body>
+                <Courses rule={props.rule} />
+            </Card.Body>
         </div>
     )
 }
@@ -45,6 +50,10 @@ function IndividualRule(props: IndividualRuleProps) {
  * @param props 
  */
 function Courses(props: {rule: Rule}) {
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     if (props.rule.courses && props.rule.courses.length <= courseShowLimit) {
         return (
             <ListGroup variant="flush">
@@ -60,16 +69,37 @@ function Courses(props: {rule: Rule}) {
     }
     else if (props.rule.courses) {
         return (
-            <ListGroup variant="flush">
-                Too many courses: ({props.rule.courses.length})
-                {/* {props.rule.courses && props.rule.courses.map((course, i) => {
-                    return (
-                        <ListGroup.Item key={i + course.code}>
-                            {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
-                        </ListGroup.Item>
-                    )
-                })} */}
-            </ListGroup>
+            <>
+                <ListGroup variant="flush">
+                    <Button variant="primary" onClick={handleShow}>View {props.rule.courses.length} Courses</Button>
+
+                    {/* {props.rule.courses && props.rule.courses.map((course, i) => {
+                        return (
+                            <ListGroup.Item key={i + course.code}>
+                                {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                            </ListGroup.Item>
+                        )
+                    })} */}
+                </ListGroup>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Showing {props.rule.courses.length} courses</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <ListGroup variant="flush">
+                            {props.rule.courses && props.rule.courses.map((course, i) => {
+                                return (<ListGroup.Item key={i + course.code}>{course.code} ({course.credit_points ? course.credit_points : '0'} UOC)</ListGroup.Item>)
+                            })}
+                        </ListGroup>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
         )
     }
     else {
