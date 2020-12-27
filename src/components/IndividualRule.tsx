@@ -14,6 +14,8 @@ interface IndividualRuleProps {
     index: number;
 }
 
+const courseShowLimit = 20;
+
 /**
  * Render an individual rule
  * @param props 
@@ -33,6 +35,18 @@ function IndividualRule(props: IndividualRuleProps) {
                     {getRuleInstruction(props.rule)}
                 </Card.Title>
             </OverlayTrigger>
+            <Courses rule={props.rule} />
+        </div>
+    )
+}
+
+/**
+ * Display the courses
+ * @param props 
+ */
+function Courses(props: {rule: Rule}) {
+    if (props.rule.courses && props.rule.courses.length <= courseShowLimit) {
+        return (
             <ListGroup variant="flush">
                 {props.rule.courses && props.rule.courses.map((course, i) => {
                     return (
@@ -42,10 +56,31 @@ function IndividualRule(props: IndividualRuleProps) {
                     )
                 })}
             </ListGroup>
-        </div>
-    )
+        )
+    }
+    else if (props.rule.courses) {
+        return (
+            <ListGroup variant="flush">
+                Too many courses: ({props.rule.courses.length})
+                {/* {props.rule.courses && props.rule.courses.map((course, i) => {
+                    return (
+                        <ListGroup.Item key={i + course.code}>
+                            {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                        </ListGroup.Item>
+                    )
+                })} */}
+            </ListGroup>
+        )
+    }
+    else {
+        return null;
+    }
 }
 
+/**
+ * Based off the rule, return what the instruction header should be
+ * @param rule 
+ */
 function getRuleInstruction(rule: Rule): string {
     if (rule.credit_points && rule.credit_points_max && rule.credit_points === rule.credit_points_max) {
         return `Finish ${rule.credit_points} UOC of the following courses:`;
