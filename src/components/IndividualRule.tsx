@@ -33,6 +33,15 @@ function IndividualRule(props: IndividualRuleProps) {
                     {getRuleInstruction(props.rule)}
                 </Card.Title>
             </OverlayTrigger>
+            <ListGroup variant="flush">
+                {props.rule.courses && props.rule.courses.map((course, i) => {
+                    return (
+                        <ListGroup.Item key={i + course.code}>
+                            {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                        </ListGroup.Item>
+                    )
+                })}
+            </ListGroup>
         </div>
     )
 }
