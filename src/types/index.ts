@@ -58,7 +58,10 @@ interface Requirements {
 }
 
 interface Rule {
-    courses?: any[];
+    courses?: {
+        code: string;
+        credit_points: string;
+    }[];
     credit_points?: string;
     credit_points_max?: string;
     description?: string;

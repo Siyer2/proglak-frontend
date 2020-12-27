@@ -29,7 +29,7 @@ function Rules(props: RulesProps) {
 /**
  * Handle each rule type (e.g. coreCourses)
  */
-function RuleTypeContainer(props: {ruleName: string, requirements: any, eventKey: string}) {
+function RuleTypeContainer(props: {ruleName: string, requirements: Rule[], eventKey: string}) {
     // Map through each rule and render it
     const displayRules = props.requirements.map((requirement: Rule, i: number) => {
         return (
