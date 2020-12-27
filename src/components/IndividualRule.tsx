@@ -71,15 +71,9 @@ function Courses(props: {rule: Rule}) {
         return (
             <>
                 <ListGroup variant="flush">
-                    <Button variant="primary" onClick={handleShow}>View {props.rule.courses.length} Courses</Button>
-
-                    {/* {props.rule.courses && props.rule.courses.map((course, i) => {
-                        return (
-                            <ListGroup.Item key={i + course.code}>
-                                {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
-                            </ListGroup.Item>
-                        )
-                    })} */}
+                    <ListGroup.Item>
+                        <Button variant="primary" onClick={handleShow}>View {props.rule.courses.length} Courses</Button>
+                    </ListGroup.Item>
                 </ListGroup>
 
                 <Modal show={show} onHide={handleClose}>
