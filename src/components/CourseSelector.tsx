@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import AsyncSelect from 'react-select/async';
 import { ValueType, OptionTypeBase, ActionMeta } from 'react-select';
 import { Form, Col, Button } from 'react-bootstrap';
@@ -10,7 +12,6 @@ function CourseSelector() {
     const [courseInput, setCourseInput] = useState<{course: ReturnedCourse, label: string} | null>(null);
     const [completedCourses, setCompletedCourses] = useState<ReturnedCourse[]>([]);
     //==== End state ====//
-    console.log("courseInput", courseInput);
 
     const promiseOptions = (inputValue: string) => {
         return new Promise(async resolve => {
@@ -44,30 +45,49 @@ function CourseSelector() {
     }
 
     /**
-     * Handle when Add is clicked
-     * Append it to state as completedCourses
-     * Reset the courseInput
-     * Make changes to the results
+     * Handle when a course is added or removed
+     * @param actionType whether the action is to add or remove a course
+     * @param courseCodeToRemove 
      */
-    function courseAdded() {
-        if (courseInput) {
-            // Add to completedCourses
-            const newCompletedCourses = completedCourses.concat([courseInput.course]);
+    function courseChanged(actionType: 'added' | 'removed', courseCodeToRemove?: string) {
+        if (actionType === "added") {
+            if (courseInput) {
+                // Add to completedCourses
+                const newCompletedCourses = completedCourses.concat([courseInput.course]);
+                setCompletedCourses(newCompletedCourses);
+
+                // Clear courseInput
+                setCourseInput(null);
+            }
+        }
+        else {
+            // Remove the course from completedCourses
+            const newCompletedCourses = _.remove(completedCourses, function(course) {
+                return course.item.Item.course_code !== courseCodeToRemove;
+            });
+
+            // Update state
             setCompletedCourses(newCompletedCourses);
-            
-            // Clear courseInput
-            setCourseInput(null);
         }
     }
 
     const listOfCompletedCourses = completedCourses.length && completedCourses.map((completedCourse, i) => {
         const link = `https://www.handbook.unsw.edu.au${completedCourse.item.Item.link}`;
         return (
-            <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer" key={completedCourse.item.Item.course_code + i}>
-                <Button variant="secondary" block>
-                    {completedCourse.item.Item.course_code}: {completedCourse.item.Item.name}
-                </Button>
-            </a>
+            <Form.Row key={completedCourse.item.Item.course_code + i}>
+                <Col>
+                    <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
+                        <Button variant="secondary" block>
+                                {completedCourse.item.Item.course_code}: {completedCourse.item.Item.name}
+                        </Button>
+                    </a>
+                </Col>
+                <Col xs="auto">
+                    <Button className="mb-2" onClick={() => { courseChanged('removed', completedCourse.item.Item.course_code) }}>
+                        X
+                    </Button>
+                </Col>
+            </Form.Row>
         )
     });
 
@@ -77,14 +97,9 @@ function CourseSelector() {
                 <Col>
                     {/* <AsyncSelect onChange={handleCourseInputChange} cacheOptions defaultOptions={getDefaultOptions()} loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} /> */}
                     <AsyncSelect onChange={handleCourseInputChange} defaultOptions loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} />
-                    {/* {courseError &&
-                        <Form.Text className="text-muted">
-                            {courseError}
-                        </Form.Text>
-                    } */}
                 </Col>
                 <Col xs="auto">
-                    <Button onClick={() => { courseAdded() }} className="mb-2">
+                    <Button onClick={() => { courseChanged('added') }} className="mb-2">
                         Add
                     </Button>
                 </Col>
