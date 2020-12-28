@@ -6,6 +6,7 @@ import {
 } from 'react-bootstrap';
 import { Requirements } from '../types'
 import Rules from './Rules';
+import CourseSelector from './CourseSelector';
 
 function ResultsPage(props: any): ReactElement {
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
@@ -71,6 +72,7 @@ function ResultsHeader(props: ResultsHeaderProps) {
                 <h5>
                     You have at least {props.requirements.minimumUOC} UOC to go
                 </h5>
+                <CourseSelector />
             </Jumbotron>
         </>
     )
