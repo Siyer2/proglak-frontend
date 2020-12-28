@@ -68,10 +68,17 @@ interface Rule {
     url?: string;
 }
 
+interface ReturnedCourse {
+    item: {
+        Item: Course
+    }
+}
+
 export type {
     Course,
     Program,
     Specialisation, 
     Requirements, 
-    Rule
+    Rule, 
+    ReturnedCourse
 }

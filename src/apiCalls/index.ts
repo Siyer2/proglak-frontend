@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { Program } from '../types';
+import { Program, ReturnedCourse } from '../types';
 
 const domain = process.env.REACT_APP_DEPLOYMENT === 'production' ? 'https://04mipups4j.execute-api.ap-southeast-2.amazonaws.com' : 'http://localhost:3000';
 
@@ -112,6 +112,37 @@ export function getRequirements(code: string, implementation_year: string, speci
                 });
         } catch (ex) {
             console.log("EXCEPTION GETTING REQUIREMENTS", ex);
+            reject(ex);
+        }
+    });
+}
+
+/**
+ * Takes in a query and returns courses that match the query
+ * @param query 
+ */
+export function getCourseList(query: string): Promise<ReturnedCourse[]> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var config: AxiosRequestConfig = {
+                method: 'post',
+                url: `${domain}/course/autocomplete`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: { query }
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    console.log("AXIOS ERROR GETTING COURSE LIST", error);
+                    reject(error);
+                });
+        } catch (ex) {
+            console.log("EXCEPTION GETTING COURSE LIST", ex);
             reject(ex);
         }
     });
