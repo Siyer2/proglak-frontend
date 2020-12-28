@@ -9,6 +9,10 @@ import Rules from './Rules';
 import CourseSelector from './CourseSelector';
 
 function ResultsPage(props: any): ReactElement {
+    function courseChanged(completedCourses: any) {
+        console.log("completedCourses", completedCourses);
+    }
+
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
         return (
             <NoSetProgram />
@@ -23,7 +27,7 @@ function ResultsPage(props: any): ReactElement {
                     </div>
                     :
                     <>
-                        <Results requirements={props.requirements.requirements} />
+                        <Results requirements={props.requirements.requirements} courseChanged={courseChanged} />
                     </>
                 }
             </>
@@ -43,12 +47,12 @@ function Results(props: any) {
 
     return (
         <div>
-            <ResultsHeader requirements={resultHeaderProps} />
+            <ResultsHeader requirements={resultHeaderProps} courseChanged={props.courseChanged}/>
             <Rules requirements={requirements} />
         </div>
     )
 }
-
+//courseChanged: (completedCourses: any) => void
 interface ResultsHeaderProps {
     requirements: {
         code: string;
@@ -56,7 +60,8 @@ interface ResultsHeaderProps {
         implementation_year: string;
         minimumUOC: string | number;
         specialisations?: string[] 
-    }
+    };
+    courseChanged: (completedCourses: any) => void;
 }
 /**
  * Display the program info, specialisations, remaining UOC and the course selector
@@ -72,7 +77,7 @@ function ResultsHeader(props: ResultsHeaderProps) {
                 <h5>
                     You have at least {props.requirements.minimumUOC} UOC to go
                 </h5>
-                <CourseSelector />
+                <CourseSelector courseChanged={props.courseChanged}/>
             </Jumbotron>
         </>
     )

@@ -5,12 +5,16 @@ import { ValueType, OptionTypeBase, ActionMeta } from 'react-select';
 import { Form, Col, Button } from 'react-bootstrap';
 import { getCourseList } from '../apiCalls';
 import { useState } from 'react';
-import { ReturnedCourse } from '../types';
+import { Course, ReturnedCourse } from '../types';
 
-function CourseSelector() {
+interface CourseSelectorProps {
+    courseChanged: (completedCourses: any) => void;
+}
+
+function CourseSelector(props: CourseSelectorProps) {
     //==== State ====//
     const [courseInput, setCourseInput] = useState<{course: ReturnedCourse, label: string} | null>(null);
-    const [completedCourses, setCompletedCourses] = useState<ReturnedCourse[]>([]);
+    const [completedCourses, setCompletedCourses] = useState<Course[]>([]);
     //==== End state ====//
 
     const promiseOptions = (inputValue: string) => {
@@ -50,10 +54,18 @@ function CourseSelector() {
      * @param courseCodeToRemove 
      */
     function courseChanged(actionType: 'added' | 'removed', courseCodeToRemove?: string) {
+        let newCompletedCourses: Course[] = [];
         if (actionType === "added") {
             if (courseInput) {
                 // Add to completedCourses
-                const newCompletedCourses = completedCourses.concat([courseInput.course]);
+                const courseToAdd: Course = {
+                    course_code: courseInput.course.item.Item.course_code,
+                    implementation_year: courseInput.course.item.Item.implementation_year,
+                    link: courseInput.course.item.Item.link,
+                    name: courseInput.course.item.Item.name,
+                    credit_points: courseInput.course.item.Item.credit_points
+                }
+                newCompletedCourses = completedCourses.concat([courseToAdd]);
                 setCompletedCourses(newCompletedCourses);
 
                 // Clear courseInput
@@ -62,28 +74,30 @@ function CourseSelector() {
         }
         else {
             // Remove the course from completedCourses
-            const newCompletedCourses = _.remove(completedCourses, function(course) {
-                return course.item.Item.course_code !== courseCodeToRemove;
+            newCompletedCourses = _.remove(completedCourses, function(course) {
+                return course.course_code !== courseCodeToRemove;
             });
 
             // Update state
             setCompletedCourses(newCompletedCourses);
         }
+
+        props.courseChanged(newCompletedCourses);
     }
 
     const listOfCompletedCourses = completedCourses.length && completedCourses.map((completedCourse, i) => {
-        const link = `https://www.handbook.unsw.edu.au${completedCourse.item.Item.link}`;
+        const link = `https://www.handbook.unsw.edu.au${completedCourse.link}`;
         return (
-            <Form.Row key={completedCourse.item.Item.course_code + i}>
+            <Form.Row key={completedCourse.course_code + i}>
                 <Col>
                     <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
                         <Button variant="secondary" block>
-                                {completedCourse.item.Item.course_code}: {completedCourse.item.Item.name}
+                                {completedCourse.course_code}: {completedCourse.name}
                         </Button>
                     </a>
                 </Col>
                 <Col xs="auto">
-                    <Button className="mb-2" onClick={() => { courseChanged('removed', completedCourse.item.Item.course_code) }}>
+                    <Button className="mb-2" onClick={() => { courseChanged('removed', completedCourse.course_code) }}>
                         X
                     </Button>
                 </Col>
