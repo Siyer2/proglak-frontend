@@ -7,9 +7,10 @@ import { ReturnedCourse } from '../types';
 
 function CourseSelector() {
     //==== State ====//
-    const [courseInput, setCourseInput] = useState<{course: ReturnedCourse, label: string} | undefined>(undefined);
+    const [courseInput, setCourseInput] = useState<{course: ReturnedCourse, label: string} | null>(null);
     const [completedCourses, setCompletedCourses] = useState<ReturnedCourse[]>([]);
     //==== End state ====//
+    console.log("courseInput", courseInput);
 
     const promiseOptions = (inputValue: string) => {
         return new Promise(async resolve => {
@@ -25,9 +26,13 @@ function CourseSelector() {
         });
     }
 
-
+    /**
+     * Handle when a new course is selected (before add is clicked)
+     * Add it to state as courseInput
+     * @param selectedCourse 
+     * @param action 
+     */
     const handleCourseInputChange = (selectedCourse: ValueType<OptionTypeBase, false>, action: ActionMeta<OptionTypeBase>) => {
-        console.log("changed", selectedCourse);
         if (selectedCourse) {
             const newCourseInput: { course: ReturnedCourse, label: string } = {
                 course: selectedCourse.course, 
@@ -38,6 +43,12 @@ function CourseSelector() {
         }
     }
 
+    /**
+     * Handle when Add is clicked
+     * Append it to state as completedCourses
+     * Reset the courseInput
+     * Make changes to the results
+     */
     function courseAdded() {
         if (courseInput) {
             // Add to completedCourses
@@ -45,7 +56,7 @@ function CourseSelector() {
             setCompletedCourses(newCompletedCourses);
             
             // Clear courseInput
-            setCourseInput(undefined);
+            setCourseInput(null);
         }
     }
 
@@ -65,7 +76,7 @@ function CourseSelector() {
             <Form.Row>
                 <Col>
                     {/* <AsyncSelect onChange={handleCourseInputChange} cacheOptions defaultOptions={getDefaultOptions()} loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} /> */}
-                    <AsyncSelect onChange={handleCourseInputChange} cacheOptions defaultOptions loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} />
+                    <AsyncSelect onChange={handleCourseInputChange} defaultOptions loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} />
                     {/* {courseError &&
                         <Form.Text className="text-muted">
                             {courseError}
