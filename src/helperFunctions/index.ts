@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { Course, Requirements, Rule } from "../types";
+import store from '../index';
 
 /**
  * Convert HTML to a readable string
@@ -22,6 +23,10 @@ interface RequirementsWithIndexSignature extends Requirements {
  * @returns the updated requirements
  */
 export function getUpdatedRequirements(completedCourses: Course[], initialRequirements: Requirements): Requirements {
+    const state = store.getState();
+    console.log("state", state);
+
+
     let updatedRequirements: RequirementsWithIndexSignature = Object.assign({}, initialRequirements);
     let uocCompleted = 0;
     
@@ -46,7 +51,8 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
 
                             // Reduce the program's minimum UOC by removedCourse[0].creditPoints
                             if (removedCourse[0]) {
-                                uocCompleted = Number(removedCourse[0].credit_points);
+                                uocCompleted += Number(removedCourse[0].credit_points);
+                                console.log(`Adding ${Number(removedCourse[0].credit_points)}`)
 
                                 // Reduce the credit_points of the rule
                                 if (rule.credit_points) {
