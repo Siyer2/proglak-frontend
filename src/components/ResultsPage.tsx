@@ -4,13 +4,20 @@ import {
     Jumbotron,
     Container
 } from 'react-bootstrap';
-import { Requirements } from '../types'
+import { Course, Requirements } from '../types'
 import Rules from './Rules';
 import CourseSelector from './CourseSelector';
 
 function ResultsPage(props: any): ReactElement {
-    function courseChanged(completedCourses: any) {
+    /**
+     * When a course is added/removed in the CourseSelector, update the requirements
+     * @param completedCourses 
+     * @returns the remaining requirements
+     */
+    function courseChanged(completedCourses: Course[]): Requirements {
         console.log("completedCourses", completedCourses);
+
+        return props.requirements.requirements;
     }
 
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
@@ -27,7 +34,7 @@ function ResultsPage(props: any): ReactElement {
                     </div>
                     :
                     <>
-                        <Results requirements={props.requirements.requirements} courseChanged={courseChanged} />
+                        <Results requirements={courseChanged(props.requirements.requirements)} courseChanged={courseChanged} />
                     </>
                 }
             </>
@@ -61,7 +68,7 @@ interface ResultsHeaderProps {
         minimumUOC: string | number;
         specialisations?: string[] 
     };
-    courseChanged: (completedCourses: any) => void;
+    courseChanged: (completedCourses: Course[]) => Requirements;
 }
 /**
  * Display the program info, specialisations, remaining UOC and the course selector

@@ -5,10 +5,10 @@ import { ValueType, OptionTypeBase, ActionMeta } from 'react-select';
 import { Form, Col, Button } from 'react-bootstrap';
 import { getCourseList } from '../apiCalls';
 import { useState } from 'react';
-import { Course, ReturnedCourse } from '../types';
+import { Course, Requirements, ReturnedCourse } from '../types';
 
 interface CourseSelectorProps {
-    courseChanged: (completedCourses: any) => void;
+    courseChanged: (completedCourses: Course[]) => Requirements;
 }
 
 function CourseSelector(props: CourseSelectorProps) {
