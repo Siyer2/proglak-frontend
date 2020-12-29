@@ -7,6 +7,7 @@ import {
 import { Course, Requirements } from '../types'
 import Rules from './Rules';
 import CourseSelector from './CourseSelector';
+import { getUpdatedRequirements } from '../helperFunctions';
 
 function ResultsPage(props: any): ReactElement {
     /**
@@ -15,9 +16,7 @@ function ResultsPage(props: any): ReactElement {
      * @returns the remaining requirements
      */
     function courseChanged(completedCourses: Course[]): Requirements {
-        console.log("completedCourses", completedCourses);
-
-        return props.requirements.requirements;
+        return getUpdatedRequirements(completedCourses, props.requirements.requirements);
     }
 
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
@@ -59,7 +58,6 @@ function Results(props: any) {
         </div>
     )
 }
-//courseChanged: (completedCourses: any) => void
 interface ResultsHeaderProps {
     requirements: {
         code: string;

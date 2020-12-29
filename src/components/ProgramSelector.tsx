@@ -168,10 +168,6 @@ function ProgramSelector(props: any) {
     //==== Go clicked helpers ====//
     async function goClicked() {
         props.getProgramRequirements(selectedProgram!.Item.code, selectedProgram!.Item.implementation_year, selectedSimplifiedSpecialisations)
-        console.log("go clicked");
-        console.log(selectedProgram?.Item.code);
-        console.log(selectedProgram?.Item.implementation_year);
-        console.log(selectedSimplifiedSpecialisations);
     }
     const isGoDisabled = (programError || programError === 'unset') ? true : false;
     

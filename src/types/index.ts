@@ -44,7 +44,7 @@ interface Specialisation {
 interface Requirements {
     code: string;
     title: string;
-    minimumUOC: string;
+    minimumUOC: string | number;
     implementation_year: string;
     specialisations?: string[],
     coreCourses?: any;

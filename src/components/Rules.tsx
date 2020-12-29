@@ -37,7 +37,6 @@ function RuleTypeContainer(props: {ruleName: string, requirements: Rule[], event
         )
     });
 
-    console.log("reqs", props.requirements);
     return (
         <Card>
             <Accordion.Toggle as={Card.Header} eventKey={props.eventKey}>
