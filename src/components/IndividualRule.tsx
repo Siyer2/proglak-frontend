@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactElement, useState } from 'react';
 
 import { stripHtml } from '../helperFunctions';
 import { Rule } from '../types';
@@ -8,9 +8,7 @@ import {
     Card, 
     ListGroup, 
     Button, 
-    Modal, 
-    Form,
-    Col
+    Modal
 } from 'react-bootstrap';
 
 interface IndividualRuleProps {
@@ -56,22 +54,16 @@ function Courses(props: {rule: Rule}) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    function tickClicked(course: { code: string, credit_points: string }) {
+         console.log("tick clicked on course", course);
+    }
+
     if (props.rule.courses && props.rule.courses.length <= courseShowLimit) {
         return (
             <ListGroup variant="flush">
                 {props.rule.courses && props.rule.courses.map((course, i) => {
-                    const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${course.code}/`;
                     return (
-                        <ListGroup.Item key={i + course.code}>
-                            <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
-                                <Button variant="primary">
-                                    {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
-                                            </Button>
-                            </a>
-                            <Button className="mb-2" variant={'success'} style={{float: 'right'}}>
-                                ✔️
-                            </Button>
-                        </ListGroup.Item>
+                        <Course course={course} index={i} tickClicked={tickClicked}/>
                     )
                 })}
             </ListGroup>
@@ -93,19 +85,8 @@ function Courses(props: {rule: Rule}) {
                     <Modal.Body>
                         <ListGroup variant="flush">
                             {props.rule.courses && props.rule.courses.map((course, i) => {
-                                const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${course.code}/`;
                                 return (
-                                    <ListGroup.Item key={i + course.code}>
-                                        <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
-                                            <Button variant="primary" block>
-                                                {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
-                                            </Button>
-                                        </a>
-                                        
-                                        <Button className="mb-2" variant={'success'} style={{float: 'right'}}>
-                                            ✔️
-                                        </Button>
-                                    </ListGroup.Item>
+                                    <Course course={course} index={i} tickClicked={tickClicked} />
                                 )
                             })}
                         </ListGroup>
@@ -122,6 +103,41 @@ function Courses(props: {rule: Rule}) {
     else {
         return null;
     }
+}
+
+interface CourseProps {
+    course: { code: string, credit_points: string };
+    index: number;
+    tickClicked: (course: { code: string, credit_points: string }) => void;
+}
+/**
+ * Display an individual course
+ * @param props 
+ */
+function Course(props: CourseProps): ReactElement {
+    const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${props.course.code}/`;
+    return (
+        <ListGroup.Item key={props.index + props.course.code}>
+            <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
+                <Button variant="primary">
+                    {props.course.code} ({props.course.credit_points ? props.course.credit_points : '0'} UOC)
+                                </Button>
+            </a>
+            <OverlayTrigger
+                key={props.index + props.course.code}
+                placement={'top'}
+                overlay={
+                    <Tooltip id={props.index + props.course.code}>
+                        Mark course as completed
+                    </Tooltip>
+                }
+            >
+                <Button className="mb-2" variant={'success'} style={{ float: 'right' }} onClick={() => { props.tickClicked(props.course) }}>
+                    ✔️
+                </Button>
+            </OverlayTrigger>
+        </ListGroup.Item>
+    )
 }
 
 /**
