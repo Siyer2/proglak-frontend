@@ -1,4 +1,5 @@
 import { Accordion, Card } from 'react-bootstrap';
+import { ruleIsCompleted } from '../helperFunctions';
 
 import { Requirements, Rule } from '../types';
 import IndividualRule from './IndividualRule';
@@ -37,6 +38,9 @@ interface RuleTypeContainerProps {
  * Handle each rule type (e.g. coreCourses)
  */
 function RuleTypeContainer(props: RuleTypeContainerProps) {
+    const isCompleted = (rule: Rule) => (ruleIsCompleted(rule, props.ruleName) === true ? true : false);
+    const allRulesCompleted = props.requirements.every(isCompleted);
+
     // Map through each rule and render it
     const displayRules = props.requirements.map((requirement: Rule, i: number) => {
         return (
@@ -45,6 +49,7 @@ function RuleTypeContainer(props: RuleTypeContainerProps) {
     });
 
     return (
+        allRulesCompleted ? null : 
         <Card>
             <Accordion.Toggle as={Card.Header} eventKey={props.eventKey}>
                 <h3>

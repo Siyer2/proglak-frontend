@@ -82,6 +82,11 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
     }
 }
 
+/**
+ * See if an individual rule is completed or not
+ * @param rule 
+ * @param ruleName 
+ */
 export function ruleIsCompleted(rule: Rule, ruleName: string): boolean {
     let isCompleted = false;
     if (ruleName === "One of the Following") {
@@ -95,6 +100,6 @@ export function ruleIsCompleted(rule: Rule, ruleName: string): boolean {
     ) {
         isCompleted = true;
     }
-    
+
     return isCompleted;
 }
