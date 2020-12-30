@@ -105,8 +105,7 @@ function CourseSelector(props: CourseSelectorProps) {
         <Form style={{ padding: '10px' }}>
             <Form.Row>
                 <Col>
-                    {/* <AsyncSelect onChange={handleCourseInputChange} cacheOptions defaultOptions={getDefaultOptions()} loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} /> */}
-                    <AsyncSelect onChange={handleCourseInputChange} defaultOptions loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} />
+                    <AsyncSelect onChange={handleCourseInputChange} loadOptions={promiseOptions} placeholder={"Add courses you've completed..."} value={courseInput} />
                 </Col>
                 <Col xs="auto">
                     <Button onClick={() => { courseChanged('added') }} className="mb-2">
