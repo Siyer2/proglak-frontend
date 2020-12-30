@@ -8,7 +8,9 @@ import {
     Card, 
     ListGroup, 
     Button, 
-    Modal
+    Modal, 
+    Form,
+    Col
 } from 'react-bootstrap';
 
 interface IndividualRuleProps {
@@ -58,9 +60,17 @@ function Courses(props: {rule: Rule}) {
         return (
             <ListGroup variant="flush">
                 {props.rule.courses && props.rule.courses.map((course, i) => {
+                    const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${course.code}/`;
                     return (
                         <ListGroup.Item key={i + course.code}>
-                            {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                            <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
+                                <Button variant="primary">
+                                    {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                                            </Button>
+                            </a>
+                            <Button className="mb-2" variant={'success'} style={{float: 'right'}}>
+                                ✔️
+                            </Button>
                         </ListGroup.Item>
                     )
                 })}
@@ -83,7 +93,20 @@ function Courses(props: {rule: Rule}) {
                     <Modal.Body>
                         <ListGroup variant="flush">
                             {props.rule.courses && props.rule.courses.map((course, i) => {
-                                return (<ListGroup.Item key={i + course.code}>{course.code} ({course.credit_points ? course.credit_points : '0'} UOC)</ListGroup.Item>)
+                                const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${course.code}/`;
+                                return (
+                                    <ListGroup.Item key={i + course.code}>
+                                        <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
+                                            <Button variant="primary" block>
+                                                {course.code} ({course.credit_points ? course.credit_points : '0'} UOC)
+                                            </Button>
+                                        </a>
+                                        
+                                        <Button className="mb-2" variant={'success'} style={{float: 'right'}}>
+                                            ✔️
+                                        </Button>
+                                    </ListGroup.Item>
+                                )
                             })}
                         </ListGroup>
                     </Modal.Body>
