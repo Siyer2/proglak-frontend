@@ -24,11 +24,8 @@ interface RequirementsWithIndexSignature extends Requirements {
  */
 export function getUpdatedRequirements(completedCourses: Course[], initialRequirements: Requirements): Requirements {
     const state = store.getState();
-    console.log("state", state);
-
 
     let updatedRequirements: RequirementsWithIndexSignature = _.cloneDeep(state.requirements.requirements);
-    // let updatedRequirements: RequirementsWithIndexSignature = Object.assign({}, state.requirements.requirements);
     let uocCompleted = 0;
     
     if (!Array.isArray(completedCourses)) {
@@ -53,16 +50,16 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
 
                             // Reduce the program's minimum UOC by removedCourse[0].creditPoints
                             if (removedCourse[0]) {
-                                uocCompleted = Number(removedCourse[0].credit_points);
+                                completedUOCFromCourse = Number(removedCourse[0].credit_points);
 
                                 // Reduce the credit_points of the rule
                                 if (rule.credit_points) {
-                                    rule.credit_points = String(Number(rule.credit_points) - uocCompleted); 
+                                    rule.credit_points = String(Number(rule.credit_points) - completedUOCFromCourse); 
                                 }
 
                                 // Reduce the credit_points_max of the rule
                                 if (rule.credit_points_max) {
-                                    rule.credit_points_max = String(Number(rule.credit_points_max) - uocCompleted); 
+                                    rule.credit_points_max = String(Number(rule.credit_points_max) - completedUOCFromCourse); 
                                 }
                             }
                         }
@@ -70,11 +67,9 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
                 }
             });
             uocCompleted += Number(completedUOCFromCourse);
-            console.log(`Adding ${Number(completedUOCFromCourse)}`)
         });
 
         updatedRequirements.minimumUOC = Number(updatedRequirements.minimumUOC) - uocCompleted;
-        console.log("updated", updatedRequirements);
         
         return updatedRequirements;
     }
