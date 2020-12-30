@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { connect } from 'react-redux';
 import {
     Jumbotron,
@@ -10,13 +10,19 @@ import CourseSelector from './CourseSelector';
 import { getUpdatedRequirements } from '../helperFunctions';
 
 function ResultsPage(props: any): ReactElement {
+    //==== State ====//
+    const [currentRequirements, setCurrentRequirements] = useState<Requirements | undefined>(undefined);
+    console.log(props.requirements.requirements);
+    //==== End State ====//
+
     /**
      * When a course is added/removed in the CourseSelector, update the requirements
      * @param completedCourses 
      * @returns the remaining requirements
      */
-    function courseChanged(completedCourses: Course[]): Requirements {
-        return getUpdatedRequirements(completedCourses, props.requirements.requirements);
+    function courseChanged(completedCourses: Course[]) {
+        const updatedRequirements = getUpdatedRequirements(completedCourses, props.requirements.requirements);
+        setCurrentRequirements(updatedRequirements);
     }
 
     if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
@@ -25,6 +31,11 @@ function ResultsPage(props: any): ReactElement {
         )
     }
     else {
+        if (!props.requirements.isGettingRequirements && !currentRequirements && props.requirements.requirements && props.requirements.requirements.code) {
+            const updatedRequirements = props.requirements.requirements;
+            setCurrentRequirements(updatedRequirements);
+        }
+        
         return (
             <>
                 {props.requirements.isGettingRequirements ?
@@ -33,7 +44,7 @@ function ResultsPage(props: any): ReactElement {
                     </div>
                     :
                     <>
-                        <Results requirements={courseChanged(props.requirements.requirements)} courseChanged={courseChanged} />
+                        <Results requirements={currentRequirements} courseChanged={courseChanged} />
                     </>
                 }
             </>

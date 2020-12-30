@@ -27,7 +27,8 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
     console.log("state", state);
 
 
-    let updatedRequirements: RequirementsWithIndexSignature = Object.assign({}, initialRequirements);
+    let updatedRequirements: RequirementsWithIndexSignature = _.cloneDeep(state.requirements.requirements);
+    // let updatedRequirements: RequirementsWithIndexSignature = Object.assign({}, state.requirements.requirements);
     let uocCompleted = 0;
     
     if (!Array.isArray(completedCourses)) {
@@ -36,6 +37,7 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
     else {
         // Loop through each completedCourse
         completedCourses.forEach((completedCourse) => {
+            let completedUOCFromCourse = 0;
             // Loop through each rule name (e.g. core courses)
             const ruleNames = Object.keys(updatedRequirements);
             ruleNames.forEach((ruleName) => {
@@ -44,15 +46,14 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
                     updatedRequirements[ruleName].forEach((rule: Rule) => {
                         // See if courses exists within the individual rule
                         if (rule.courses) {
-                            // Try to find the completedCourse's code        
+                            // Try to find the completedCourse's code   
                             const removedCourse = _.remove(rule.courses, function(course) {
                                 return course.code === completedCourse.course_code
                             });
 
                             // Reduce the program's minimum UOC by removedCourse[0].creditPoints
                             if (removedCourse[0]) {
-                                uocCompleted += Number(removedCourse[0].credit_points);
-                                console.log(`Adding ${Number(removedCourse[0].credit_points)}`)
+                                uocCompleted = Number(removedCourse[0].credit_points);
 
                                 // Reduce the credit_points of the rule
                                 if (rule.credit_points) {
@@ -68,6 +69,8 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
                     });
                 }
             });
+            uocCompleted += Number(completedUOCFromCourse);
+            console.log(`Adding ${Number(completedUOCFromCourse)}`)
         });
 
         updatedRequirements.minimumUOC = Number(updatedRequirements.minimumUOC) - uocCompleted;
