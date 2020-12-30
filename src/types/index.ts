@@ -66,6 +66,10 @@ interface Rule {
     credit_points_max?: string;
     description?: string;
     url?: string;
+    completed_courses?: {
+        code: string;
+        credit_points: string;
+    }[];
 }
 
 interface ReturnedCourse {

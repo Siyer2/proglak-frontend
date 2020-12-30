@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 
-import { stripHtml } from '../helperFunctions';
+import { ruleIsCompleted, stripHtml } from '../helperFunctions';
 import { Rule } from '../types';
 import {
     OverlayTrigger, 
@@ -25,6 +25,13 @@ const courseShowLimit = 20;
  * @param props 
  */
 function IndividualRule(props: IndividualRuleProps) {
+    // Don't display the rule if it's already been completed
+    if (ruleIsCompleted(props.rule, props.ruleName)) {
+        return (
+            <></>
+        )
+    }
+
     return (
         <div key={props.ruleName + props.index}>
             <OverlayTrigger

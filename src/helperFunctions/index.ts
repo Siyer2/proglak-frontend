@@ -61,6 +61,14 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
                                 if (rule.credit_points_max) {
                                     rule.credit_points_max = String(Number(rule.credit_points_max) - completedUOCFromCourse); 
                                 }
+
+                                // Add the completed course to it's own member variable
+                                if (rule.completed_courses) {
+                                    rule.completed_courses.push(removedCourse[0]);
+                                }
+                                else {
+                                    rule.completed_courses = [removedCourse[0]];
+                                }
                             }
                         }
                     });
@@ -70,7 +78,23 @@ export function getUpdatedRequirements(completedCourses: Course[], initialRequir
         });
 
         updatedRequirements.minimumUOC = Number(updatedRequirements.minimumUOC) - uocCompleted;
-        
         return updatedRequirements;
     }
+}
+
+export function ruleIsCompleted(rule: Rule, ruleName: string): boolean {
+    let isCompleted = false;
+    if (ruleName === "One of the Following") {
+        if (rule.completed_courses && rule.completed_courses.length) {
+            isCompleted = true;
+        }
+    }
+    else if (Array.isArray(rule.completed_courses) &&
+        (Number(rule.credit_points) === 0 || Number(rule.credit_points_max) === 0
+        || (rule.courses && rule.courses.length === 0))
+    ) {
+        isCompleted = true;
+    }
+    
+    return isCompleted;
 }
