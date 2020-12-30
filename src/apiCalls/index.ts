@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { Program, ReturnedCourse } from '../types';
+import { Course, Program, ReturnedCourse } from '../types';
 
 const domain = process.env.REACT_APP_DEPLOYMENT === 'production' ? 'https://04mipups4j.execute-api.ap-southeast-2.amazonaws.com' : 'http://localhost:3000';
 
@@ -143,6 +143,36 @@ export function getCourseList(query: string): Promise<ReturnedCourse[]> {
                 });
         } catch (ex) {
             console.log("EXCEPTION GETTING COURSE LIST", ex);
+            reject(ex);
+        }
+    });
+}
+
+export function getCourse(course_code: string): Promise<{Item: Course}> {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            var config: AxiosRequestConfig = {
+                method: 'post',
+                url: `${domain}/course/get`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    course_code: course_code
+                }
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    console.log("AXIOS ERROR GETTING COURSE", error);
+                    reject(error);
+                });
+        } catch (ex) {
+            console.log("EXCEPTION GETTING COURSE", ex);
             reject(ex);
         }
     });

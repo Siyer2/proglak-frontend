@@ -15,6 +15,7 @@ interface IndividualRuleProps {
     rule: Rule;
     ruleName: string;
     index: number;
+    tickClicked: (course: { code: string, credit_points: string }) => void;
 }
 
 const courseShowLimit = 20;
@@ -39,31 +40,31 @@ function IndividualRule(props: IndividualRuleProps) {
                 </Card.Title>
             </OverlayTrigger>
             <Card.Body>
-                <Courses rule={props.rule} />
+                <Courses rule={props.rule} tickClicked={props.tickClicked} />
             </Card.Body>
         </div>
     )
 }
 
+interface CoursesProps {
+    rule: Rule;
+    tickClicked: (course: { code: string, credit_points: string }) => void;
+}
 /**
  * Display the courses
  * @param props 
  */
-function Courses(props: {rule: Rule}) {
+function Courses(props: CoursesProps) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    function tickClicked(course: { code: string, credit_points: string }) {
-         console.log("tick clicked on course", course);
-    }
 
     if (props.rule.courses && props.rule.courses.length <= courseShowLimit) {
         return (
             <ListGroup variant="flush">
                 {props.rule.courses && props.rule.courses.map((course, i) => {
                     return (
-                        <Course course={course} index={i} tickClicked={tickClicked}/>
+                        <Course course={course} index={i} tickClicked={props.tickClicked}/>
                     )
                 })}
             </ListGroup>
@@ -86,7 +87,7 @@ function Courses(props: {rule: Rule}) {
                         <ListGroup variant="flush">
                             {props.rule.courses && props.rule.courses.map((course, i) => {
                                 return (
-                                    <Course course={course} index={i} tickClicked={tickClicked} />
+                                    <Course course={course} index={i} tickClicked={props.tickClicked} />
                                 )
                             })}
                         </ListGroup>

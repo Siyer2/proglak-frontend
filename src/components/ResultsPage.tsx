@@ -8,12 +8,34 @@ import { Course, Requirements } from '../types'
 import Rules from './Rules';
 import CourseSelector from './CourseSelector';
 import { getUpdatedRequirements } from '../helperFunctions';
+import { getCourse } from '../apiCalls';
 
 function ResultsPage(props: any): ReactElement {
     //==== State ====//
     const [currentRequirements, setCurrentRequirements] = useState<Requirements | undefined>(undefined);
-    console.log(props.requirements.requirements);
+    const [completedCourses, setCompletedCourses] = useState<Course[]>([]);
     //==== End State ====//
+
+    /**
+     * When the tick is clicked, find the course and add it to the completed courses state
+     * @param course 
+     */
+    async function tickClicked(course: { code: string, credit_points: string }) {
+        // Get the course
+        const fullCourseDetails = await getCourse(course.code);
+        const courseToAdd: Course = {
+            course_code: fullCourseDetails.Item.course_code,
+            implementation_year: fullCourseDetails.Item.implementation_year,
+            link: fullCourseDetails.Item.link,
+            name: fullCourseDetails.Item.name,
+            credit_points: fullCourseDetails.Item.credit_points
+        }
+
+        // Add it to completedCourses
+        const newCompletedCourses = completedCourses.concat([courseToAdd]);
+        setCompletedCourses(newCompletedCourses);
+        courseChanged(newCompletedCourses);
+    }
 
     /**
      * When a course is added/removed in the CourseSelector, update the requirements
@@ -23,9 +45,11 @@ function ResultsPage(props: any): ReactElement {
     function courseChanged(completedCourses: Course[]) {
         const updatedRequirements = getUpdatedRequirements(completedCourses, props.requirements.requirements);
         setCurrentRequirements(updatedRequirements);
+
+        setCompletedCourses(completedCourses);
     }
 
-    if (!props.requirements.isGettingRequirements && !props.requirements.requirements.code) {
+    if ((!props.requirements.isGettingRequirements && !props.requirements.requirements.code)) {
         return (
             <NoSetProgram />
         )
@@ -36,36 +60,44 @@ function ResultsPage(props: any): ReactElement {
             setCurrentRequirements(updatedRequirements);
         }
         
-        return (
-            <>
-                {props.requirements.isGettingRequirements ?
-                    <div className="spinner-border" role="status">
-                        <span className="sr-only">Loading...</span>
-                    </div>
-                    :
-                    <>
-                        <Results requirements={currentRequirements} courseChanged={courseChanged} />
-                    </>
-                }
-            </>
-        )
+        if (props.requirements.isGettingRequirements || !currentRequirements) {
+            return (
+                <div className="spinner-border" role="status">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            )
+        }
+        else {
+            return (
+                <>
+                    <Results requirements={currentRequirements} courseChanged={courseChanged} completedCourses={completedCourses} tickClicked={tickClicked} />
+                </>
+            )
+        }
     }
 }
 
-function Results(props: any) {
+interface ResultsProps {
+    courseChanged: (completedCourses: Course[]) => void;
+    requirements: Requirements;
+    tickClicked: (course: { code: string, credit_points: string }) => void;
+    completedCourses: Course[];
+}
+
+function Results(props: ResultsProps) {
     const requirements: Requirements = props.requirements;
     const resultHeaderProps = {
         code: requirements.code,
         title: requirements.title,
         implementation_year: requirements.implementation_year,
         minimumUOC: requirements.minimumUOC,
-        ...requirements.specialisations && { specialisations: requirements.specialisations }
+        ...requirements.specialisations && { specialisations: requirements.specialisations }, 
     }
 
     return (
         <div>
-            <ResultsHeader requirements={resultHeaderProps} courseChanged={props.courseChanged}/>
-            <Rules requirements={requirements} />
+            <ResultsHeader requirements={resultHeaderProps} courseChanged={props.courseChanged} completedCourses={props.completedCourses} />
+            <Rules requirements={requirements} tickClicked={props.tickClicked} />
         </div>
     )
 }
@@ -75,9 +107,10 @@ interface ResultsHeaderProps {
         title: string;
         implementation_year: string;
         minimumUOC: string | number;
-        specialisations?: string[] 
+        specialisations?: string[]; 
     };
-    courseChanged: (completedCourses: Course[]) => Requirements;
+    courseChanged: (completedCourses: Course[]) => void;
+    completedCourses: Course[];
 }
 /**
  * Display the program info, specialisations, remaining UOC and the course selector
@@ -93,7 +126,7 @@ function ResultsHeader(props: ResultsHeaderProps) {
                 <h5>
                     You have at least {props.requirements.minimumUOC} UOC to go
                 </h5>
-                <CourseSelector courseChanged={props.courseChanged}/>
+                <CourseSelector courseChanged={props.courseChanged} completedCourses={props.completedCourses} />
             </Jumbotron>
         </>
     )
