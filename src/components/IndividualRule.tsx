@@ -123,7 +123,7 @@ interface CourseProps {
  * @param props 
  */
 function Course(props: CourseProps): ReactElement {
-    const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${props.course.code}/`;
+    // const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${props.course.code}/`;
     return (
         <ListGroup.Item key={props.index + props.course.code}>
             {/* <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer"> */}
