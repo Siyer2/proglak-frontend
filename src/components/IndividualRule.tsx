@@ -126,11 +126,11 @@ function Course(props: CourseProps): ReactElement {
     const link = `https://www.handbook.unsw.edu.au/undergraduate/courses/2021/${props.course.code}/`;
     return (
         <ListGroup.Item key={props.index + props.course.code}>
-            <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
-                <Button variant="primary">
+            {/* <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer"> */}
+                {/* <Button variant="primary"> */}
                     {props.course.code} ({props.course.credit_points ? props.course.credit_points : '0'} UOC)
-                                </Button>
-            </a>
+                {/* </Button> */}
+            {/* </a> */}
             <OverlayTrigger
                 key={props.index + props.course.code}
                 placement={'top'}
