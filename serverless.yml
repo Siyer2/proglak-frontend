@@ -1,5 +1,5 @@
 org: si2222
-app: frontend
+app: app
 name: react-starter
 component: website
 
@@ -11,4 +11,4 @@ inputs:
     dist: ./build
   env:
     REACT_APP_DEPLOYMENT: production
-  # domain: proglak.com
+  domain: proglak.com

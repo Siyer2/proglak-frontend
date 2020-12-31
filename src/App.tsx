@@ -25,11 +25,13 @@ function App() {
 }
 
 const newFeatures = [
-  "Double Majors"
+  "Double Majors", 
+  "Delete Courses", 
+  "Mark course as completed with the tick"
 ]
 const popover = (
   <Popover id="popover-basic">
-    <Popover.Title as="h3">11th December, 2020</Popover.Title>
+    <Popover.Title as="h3">31st December, 2020</Popover.Title>
     {newFeatures.map((feature, i) => {
       return (
         <Popover.Content key={i + feature}>
