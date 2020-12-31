@@ -95,7 +95,7 @@ export function ruleIsCompleted(rule: Rule, ruleName: string): boolean {
         }
     }
     else if (Array.isArray(rule.completed_courses) &&
-        (Number(rule.credit_points) === 0 || Number(rule.credit_points_max) === 0
+        (Number(rule.credit_points) <= 0 || Number(rule.credit_points_max) <= 0
         || (rule.courses && rule.courses.length === 0))
     ) {
         isCompleted = true;
