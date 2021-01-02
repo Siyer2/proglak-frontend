@@ -6,6 +6,7 @@ import { Form, Col, Button } from 'react-bootstrap';
 import { getCourseList } from '../apiCalls';
 import { useState } from 'react';
 import { Course, ReturnedCourse } from '../types';
+import { trackEvent } from '../track';
 
 interface CourseSelectorProps {
     courseChanged: (completedCourses: Course[]) => void;
@@ -69,6 +70,8 @@ function CourseSelector(props: CourseSelectorProps) {
 
                 // Clear courseInput
                 setCourseInput(null);
+
+                trackEvent("Course Added");
             }
         }
         else {
@@ -76,6 +79,8 @@ function CourseSelector(props: CourseSelectorProps) {
             newCompletedCourses = _.remove(props.completedCourses, function(course) {
                 return course.course_code !== courseCodeToRemove;
             });
+
+            trackEvent("Course Removed");
         }
 
         props.courseChanged(newCompletedCourses);

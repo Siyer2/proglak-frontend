@@ -9,6 +9,7 @@ import AsyncSelect from 'react-select/async';
 import { getProgramList, getProgram } from '../apiCalls';
 import { Program } from '../types';
 import { getProgramRequirements } from '../actions/requirementsAction';
+import { trackEvent } from '../track';
 
 enum SpecialisationType {
     Majors = 'Majors',
@@ -167,7 +168,8 @@ function ProgramSelector(props: any) {
 
     //==== Go clicked helpers ====//
     async function goClicked() {
-        props.getProgramRequirements(selectedProgram!.Item.code, selectedProgram!.Item.implementation_year, selectedSimplifiedSpecialisations)
+        props.getProgramRequirements(selectedProgram!.Item.code, selectedProgram!.Item.implementation_year, selectedSimplifiedSpecialisations);
+        trackEvent("Go Clicked", { program: selectedProgram!.Item.code, implementation_year: selectedProgram!.Item.implementation_year, specialisations: selectedSimplifiedSpecialisations });
     }
     const isGoDisabled = (programError || programError === 'unset') ? true : false;
     

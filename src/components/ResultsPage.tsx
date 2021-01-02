@@ -9,6 +9,7 @@ import Rules from './Rules';
 import CourseSelector from './CourseSelector';
 import { getUpdatedRequirements } from '../helperFunctions';
 import { getCourse } from '../apiCalls';
+import { trackEvent } from '../track';
 
 function ResultsPage(props: any): ReactElement {
     //==== State ====//
@@ -35,6 +36,8 @@ function ResultsPage(props: any): ReactElement {
         const newCompletedCourses = completedCourses.concat([courseToAdd]);
         setCompletedCourses(newCompletedCourses);
         courseChanged(newCompletedCourses);
+
+        trackEvent('Tick Clicked');
     }
 
     /**
