@@ -1,13 +1,9 @@
-import { Grid } from '@giphy/react-components'
-import { GiphyFetch } from '@giphy/js-fetch-api'
 import { Jumbotron, Container } from 'react-bootstrap';
 
-function CourseRating() {
-    // use @giphy/js-fetch-api to fetch gifs, instantiate with your api key
-    const gf = new GiphyFetch('BppufVMMY118hX0xfjSv3KXzVKTebPKs')
-    // configure your fetch: fetch 10 gifs at a time as the user scrolls (offset is handled by the grid)
-    const fetchGifs = (offset: number) => gf.trending({ offset, limit: 10 })
+// @ts-ignore
+import ReactGiphySearchbox from 'react-giphy-searchbox';
 
+function CourseRating() {
     function gifClicked(e: any) {
         console.log("e", e);
     }
@@ -17,18 +13,34 @@ function CourseRating() {
             <Jumbotron fluid>
                 <Container>
                     <h1>INFS1602</h1>
-                    <h5>
+                    <>
                         Introduction to Business Programming
-                    </h5>
+                    </>
                 </Container>
             </Jumbotron>
-            <Grid
+
+            <Container fluid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <ReactGiphySearchbox
+                    apiKey="BppufVMMY118hX0xfjSv3KXzVKTebPKs"
+                    onSelect={(e: any) => { gifClicked(e) }}
+                    masonryConfig={[
+                        { columns: 2, imageWidth: 110, gutter: 5 },
+                        { mq: '300px', columns: 3, imageWidth: 150, gutter: 5 },
+                        { mq: '1000px', columns: 4, imageWidth: 220, gutter: 10 },
+                        { mq: '1200px', columns: 4, imageWidth: 250, gutter: 10 }
+                    ]}
+                    searchPlaceholder="Add your reaction to this course..."
+                />
+            </Container>
+
+
+            {/* <Grid
                 onGifClick={(e) => {gifClicked(e)}}
                 width={800}
                 columns={3}
                 fetchGifs={fetchGifs}
                 noLink={true}
-            />
+            /> */}
         </>
     )
 }
