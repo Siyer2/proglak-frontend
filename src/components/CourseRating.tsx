@@ -1,13 +1,26 @@
-import { Jumbotron, Container } from 'react-bootstrap';
+import { Jumbotron, Container, Row, Col, Card } from 'react-bootstrap';
+import { Gif } from '@giphy/react-components';
+import { GiphyFetch } from '@giphy/js-fetch-api';
+import { IGif } from '@giphy/js-types'
 
 // @ts-ignore
 import ReactGiphySearchbox from 'react-giphy-searchbox';
+
+const giphyKey = 'BppufVMMY118hX0xfjSv3KXzVKTebPKs';
+
+async function getGif(id: string): Promise<IGif> {
+    const gf = new GiphyFetch(giphyKey)
+    const { data } = await gf.gif(id);
+
+    return data;
+}
 
 function CourseRating() {
     function gifClicked(e: any) {
         console.log("e", e);
     }
 
+    // const newGif = await getGif('ZgVTBM2Z6mb3EUqoKC');
     return (
         <>
             <Jumbotron fluid>
@@ -19,9 +32,29 @@ function CourseRating() {
                 </Container>
             </Jumbotron>
 
+            <Container style={{ padding: '20px' }}>
+                <Row>
+                    <Col>
+                        <Card>
+                            <Card.Body>This is some text within a card body.</Card.Body>
+                        </Card>
+                    </Col>
+                    <Col>
+                        <Card>
+                            <Card.Body>This is some text within a card body.</Card.Body>
+                        </Card>
+                    </Col>
+                    <Col>
+                        <Card>
+                            <Card.Body>This is some text within a card body.</Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container>
+
             <Container fluid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <ReactGiphySearchbox
-                    apiKey="BppufVMMY118hX0xfjSv3KXzVKTebPKs"
+                    apiKey={giphyKey}
                     onSelect={(e: any) => { gifClicked(e) }}
                     masonryConfig={[
                         { columns: 2, imageWidth: 110, gutter: 5 },
