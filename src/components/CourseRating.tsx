@@ -1,4 +1,4 @@
-import { Jumbotron, Container, Row, Col, Card } from 'react-bootstrap';
+import { Jumbotron, Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Gif } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { IGif } from '@giphy/js-types'
@@ -101,10 +101,15 @@ function CourseRating() {
                                 <Col key={i + reaction[0] + reaction[1]}>
                                     <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                         <Card.Body>
-                                            {topGifs[i] ? <Gif gif={topGifs[i]} width={300} /> : null}
+                                            {topGifs[i] ? <Gif gif={topGifs[i]} width={300} hideAttribution={true} noLink={true} /> : null}
                                         </Card.Body>
                                         <Card.Body>
-                                            Votes: {reaction[1]}
+                                            Reactions: {reaction[1]}
+                                        </Card.Body>
+                                        <Card.Body>
+                                            <Button onClick={() => {gifClicked( {id: reaction[0]} )}}>
+                                                +1
+                                            </Button>
                                         </Card.Body>
                                     </Card>
                                 </Col>
@@ -125,8 +130,7 @@ function CourseRating() {
                     apiKey={giphyKey}
                     onSelect={(gif: any) => { gifClicked(gif) }}
                     masonryConfig={[
-                        { columns: 2, imageWidth: 110, gutter: 5 },
-                        { mq: '300px', columns: 2, imageWidth: 150, gutter: 5 },
+                        { columns: 3, imageWidth: 110, gutter: 5 },
                         { mq: '1000px', columns: 4, imageWidth: 220, gutter: 10 },
                         { mq: '1200px', columns: 4, imageWidth: 250, gutter: 10 }
                     ]}
