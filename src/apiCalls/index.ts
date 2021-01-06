@@ -177,6 +177,10 @@ export function getCourse(course_code: string): Promise<{Item: Course}> {
     });
 }
 
+/**
+ * Get the reactions for a course code
+ * @param course_code 
+ */
 export function getReactions(course_code: string): Promise<[string, number][]> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -196,11 +200,46 @@ export function getReactions(course_code: string): Promise<[string, number][]> {
                     resolve(response.data);
                 })
                 .catch(function (error) {
-                    console.log("AXIOS ERROR GETTING COURSE", error);
+                    console.log("AXIOS ERROR GETTING REACTION", error);
                     reject(error);
                 });
         } catch (ex) {
             console.log("EXCEPTION GETTING REACTIONS", ex);
+            reject(ex);
+        }
+    });
+}
+
+/**
+ * Handle when a gif is clicked to add a reaction
+ * @param course_code 
+ * @param gifId 
+ */
+export function addReaction(course_code: string, gifId: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var config: AxiosRequestConfig = {
+                method: 'post',
+                url: `${domain}/ratings/add`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    course_code: course_code, 
+                    gifId: gifId
+                }
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    console.log("AXIOS ERROR ADDING REACTION", error);
+                    reject(error);
+                });
+        } catch (ex) {
+            console.log("EXCEPTION ADDING REACTION", ex);
             reject(ex);
         }
     });
