@@ -5,22 +5,30 @@ import { IGif } from '@giphy/js-types'
 
 // @ts-ignore
 import ReactGiphySearchbox from 'react-giphy-searchbox';
+import { getReactions } from '../apiCalls';
+import { useEffect, useState } from 'react';
 
 const giphyKey = 'BppufVMMY118hX0xfjSv3KXzVKTebPKs';
 
-async function getGif(id: string): Promise<IGif> {
-    const gf = new GiphyFetch(giphyKey)
-    const { data } = await gf.gif(id);
-
-    return data;
-}
-
 function CourseRating() {
+    //==== State ====//
+    const [reactions, setReactions] = useState<[string, number][] | null>(null);
+    const [loadingReactions, setLoadingReactions] = useState(true);
+    //==== End State ====//
+
     function gifClicked(e: any) {
         console.log("e", e);
     }
 
-    // const newGif = await getGif('ZgVTBM2Z6mb3EUqoKC');
+    useEffect(() => {
+        async function getReactionsFromDB() {
+            const reactions = await getReactions('INFS2603');
+            setReactions(reactions);
+            setLoadingReactions(false);
+        }
+        getReactionsFromDB();
+    }, [])
+
     return (
         <>
             <Jumbotron fluid>
@@ -34,21 +42,38 @@ function CourseRating() {
 
             <Container style={{ padding: '20px' }}>
                 <Row>
+                    {loadingReactions ? 
+                        <Col>
+                            <div className="spinner-border" role="status">
+                                <span className="sr-only">Loading...</span>
+                            </div>
+                        </Col>
+                    :
+                    reactions && reactions.length === 0 ? 
+                        <Col>
+                            <div>
+                                No ratings yet!
+                            </div>
+                        </Col>
+                    :
+                    reactions ? 
+                        reactions.map((reaction, i) => {
+                            return (
+                                <Col key={i + reaction[0]}>
+                                    <Card>
+                                        <Card.Body>{reaction[0]}</Card.Body>
+                                        <Card.Body>{reaction[1]}</Card.Body>
+                                    </Card>
+                                </Col>
+                            )
+                        })
+                    :
                     <Col>
-                        <Card>
-                            <Card.Body>This is some text within a card body.</Card.Body>
-                        </Card>
+                        <div>
+                            Bug
+                        </div>
                     </Col>
-                    <Col>
-                        <Card>
-                            <Card.Body>This is some text within a card body.</Card.Body>
-                        </Card>
-                    </Col>
-                    <Col>
-                        <Card>
-                            <Card.Body>This is some text within a card body.</Card.Body>
-                        </Card>
-                    </Col>
+                }
                 </Row>
             </Container>
 

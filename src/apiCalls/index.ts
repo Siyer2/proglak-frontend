@@ -151,7 +151,6 @@ export function getCourseList(query: string): Promise<ReturnedCourse[]> {
 export function getCourse(course_code: string): Promise<{Item: Course}> {
     return new Promise(async (resolve, reject) => {
         try {
-
             var config: AxiosRequestConfig = {
                 method: 'post',
                 url: `${domain}/course/get`,
@@ -173,6 +172,35 @@ export function getCourse(course_code: string): Promise<{Item: Course}> {
                 });
         } catch (ex) {
             console.log("EXCEPTION GETTING COURSE", ex);
+            reject(ex);
+        }
+    });
+}
+
+export function getReactions(course_code: string): Promise<[string, number][]> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            var config: AxiosRequestConfig = {
+                method: 'post',
+                url: `${domain}/ratings/get`,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                data: {
+                    course_code: course_code
+                }
+            };
+
+            axios(config)
+                .then(function (response) {
+                    resolve(response.data);
+                })
+                .catch(function (error) {
+                    console.log("AXIOS ERROR GETTING COURSE", error);
+                    reject(error);
+                });
+        } catch (ex) {
+            console.log("EXCEPTION GETTING REACTIONS", ex);
             reject(ex);
         }
     });
