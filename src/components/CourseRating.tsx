@@ -14,6 +14,8 @@ function CourseRating() {
     //==== State ====//
     const [reactions, setReactions] = useState<[string, number][] | null>(null);
     const [loadingReactions, setLoadingReactions] = useState(true);
+
+    const [topGifs, setTopGifs] = useState<IGif[]>([]);
     //==== End State ====//
 
     function gifClicked(e: any) {
@@ -22,9 +24,21 @@ function CourseRating() {
 
     useEffect(() => {
         async function getReactionsFromDB() {
-            const reactions = await getReactions('INFS2603');
+            const reactions = await getReactions('ECON3604');
             setReactions(reactions);
             setLoadingReactions(false);
+
+            const topGifsPromises: Promise<IGif>[] = reactions.map((reaction) => {
+                return new Promise(async (resolve, reject) => {
+                    const gf = new GiphyFetch(giphyKey);
+                    const { data } = await gf.gif(reaction[0]);
+                    resolve(data);
+                });
+            });
+            
+            const topGifsToSet: IGif[] = await Promise.all(topGifsPromises);
+            console.log(topGifsToSet)
+            setTopGifs(topGifsToSet);
         }
         getReactionsFromDB();
     }, [])
@@ -60,9 +74,13 @@ function CourseRating() {
                         reactions.map((reaction, i) => {
                             return (
                                 <Col key={i + reaction[0]}>
-                                    <Card>
-                                        <Card.Body>{reaction[0]}</Card.Body>
-                                        <Card.Body>{reaction[1]}</Card.Body>
+                                    <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <Card.Body>
+                                            {topGifs[i] ? <Gif gif={topGifs[i]} width={300} /> : null}
+                                        </Card.Body>
+                                        <Card.Body>
+                                            Votes: {reaction[1]}
+                                        </Card.Body>
                                     </Card>
                                 </Col>
                             )
