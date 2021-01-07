@@ -129,7 +129,7 @@ function CourseRating(props: any) {
                                             {topGifs[i] ? <Gif gif={topGifs[i]} width={300} hideAttribution={true} noLink={true} /> : null}
                                         </Card.Body>
                                         <Card.Body>
-                                            Reactions: {reaction[1]}
+                                            Reactions: <strong>{reaction[1]}</strong>
                                         </Card.Body>
                                         <Card.Body>
                                             <Button onClick={() => {gifClicked( {id: reaction[0]} )}}>
