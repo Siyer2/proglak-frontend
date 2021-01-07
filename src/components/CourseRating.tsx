@@ -1,4 +1,4 @@
-import { Jumbotron, Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { Jumbotron, Container, Row, Col, Card, Button, Toast, OverlayTrigger } from 'react-bootstrap';
 import { Gif } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { IGif } from '@giphy/js-types'
@@ -16,6 +16,8 @@ function CourseRating() {
     const [loadingReactions, setLoadingReactions] = useState(true);
 
     const [topGifs, setTopGifs] = useState<IGif[]>([]);
+
+    const [showToast, setShowToast] = useState(false);
     //==== End State ====//
 
     const course_code = "ECON3604";
@@ -36,6 +38,7 @@ function CourseRating() {
      * @param gif
      */
     async function gifClicked(gif: any) {
+        setShowToast(true);
         await addReaction(course_code, gif.id);
         
         // Refresh reactions
@@ -66,6 +69,16 @@ function CourseRating() {
 
         const topGifsToSet: IGif[] = await Promise.all(topGifsPromises);
         setTopGifs(topGifsToSet);
+    }
+
+    function GifAddedToast() {
+        return (
+            <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+                <Toast onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+                    Reaction Added! ✅
+                </Toast>
+            </Container>
+        )
     }
 
     return (
@@ -124,6 +137,8 @@ function CourseRating() {
                 }
                 </Row>
             </Container>
+
+            <GifAddedToast />
 
             <Container fluid style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <ReactGiphySearchbox
