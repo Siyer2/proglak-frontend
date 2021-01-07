@@ -8,6 +8,7 @@ import ReactGiphySearchbox from 'react-giphy-searchbox';
 import { addReaction, getCourse, getReactions } from '../apiCalls';
 import { useEffect, useState } from 'react';
 import { Course } from '../types';
+import ralphSad from '../images/ralph.gif';
 
 const giphyKey = 'BppufVMMY118hX0xfjSv3KXzVKTebPKs';
 
@@ -103,7 +104,10 @@ function CourseRating(props: any) {
 
             <Container style={{ padding: '20px' }}>
                 <h2>
-                    Most Common Reactions
+                    {reactions && reactions.length > 0 ?
+                    'Most Common Reactions' :
+                    'No reactions yet'}
+                    
                 </h2>
                 <Row>
                     {loadingReactions ? 
@@ -115,8 +119,9 @@ function CourseRating(props: any) {
                     :
                     reactions && reactions.length === 0 ? 
                         <Col>
+                            <img src={ralphSad} width={300} alt="No reactions yet" />
                             <div>
-                                No ratings yet!
+                                Be the first to add one!
                             </div>
                         </Col>
                     :
