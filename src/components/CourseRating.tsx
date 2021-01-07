@@ -7,6 +7,7 @@ import { addReaction, getCourse, getReactions } from '../apiCalls';
 import { useEffect, useState } from 'react';
 import { Course } from '../types';
 import ralphSad from '../images/ralph.gif';
+import { trackEvent } from '../track';
 
 const config = require('../config/index.json');
 const giphyKey = config.GIPHY_TOKEN;
@@ -53,6 +54,11 @@ function CourseRating(props: any) {
         // Refresh reactions
         const reactions = await getReactions(course_code);
         await setGifsInState(reactions);
+
+        trackEvent('Added Reaction', { 
+            course_code, 
+            reaction: gif.id
+        });
     }
 
     /**

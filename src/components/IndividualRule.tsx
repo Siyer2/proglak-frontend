@@ -16,6 +16,7 @@ import {
 } from 'react-bootstrap';
 import { getReactions } from '../apiCalls';
 import ralphSad from '../images/ralph.gif';
+import { trackEvent } from '../track';
 
 const config = require('../config/index.json');
 const giphyKey = config.GIPHY_TOKEN;
@@ -169,9 +170,9 @@ function Course(props: CourseProps): ReactElement {
                     overlay={GetRatingOverlay(props.course.code)}
                 >
                     <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
-                        <Button variant="primary">
+                        <Button variant="primary" onClick={() => {trackEvent('Course Clicked', { course_code: props.course.code })}}>
                             {props.course.code} ({props.course.credit_points ? props.course.credit_points : '0'} UOC)
-                    </Button>
+                        </Button>
                     </a>
                 </OverlayTrigger>
 
