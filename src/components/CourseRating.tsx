@@ -1,7 +1,5 @@
-import { Jumbotron, Container, Row, Col, Card, Button, Toast } from 'react-bootstrap';
-import { Gif } from '@giphy/react-components';
+import { Jumbotron, Container, Row, Col, Card, Button, Toast, Image } from 'react-bootstrap';
 import { GiphyFetch } from '@giphy/js-fetch-api';
-import { IGif } from '@giphy/js-types';
 
 // @ts-ignore
 import ReactGiphySearchbox from 'react-giphy-searchbox';
@@ -18,7 +16,7 @@ function CourseRating(props: any) {
     const [reactions, setReactions] = useState<[string, number][] | null>(null);
     const [loadingReactions, setLoadingReactions] = useState(true);
 
-    const [topGifs, setTopGifs] = useState<IGif[]>([]);
+    const [topGifs, setTopGifs] = useState<string[]>([]);
 
     const [course, setCourse] = useState<Course | null>(null);
 
@@ -65,12 +63,13 @@ function CourseRating(props: any) {
         setReactions(reactions);
         setLoadingReactions(false);
 
-        const topGifsPromises: Promise<IGif>[] = reactions.map((reaction) => {
+        const topGifsPromises: Promise<string>[] = reactions.map((reaction) => {
             return new Promise(async (resolve, reject) => {
                 try {
                     const gf = new GiphyFetch(giphyKey);
                     const { data } = await gf.gif(reaction[0]);
-                    resolve(data);
+                    const linkToGif = String(data.images.original.url);
+                    resolve(linkToGif);
                 } catch (ex) {
                     console.log("EXCEPTION GETTING GIF", ex);
                     reject(ex);
@@ -78,7 +77,7 @@ function CourseRating(props: any) {
             });
         });
 
-        const topGifsToSet: IGif[] = await Promise.all(topGifsPromises);
+        const topGifsToSet: string[] = await Promise.all(topGifsPromises);
         setTopGifs(topGifsToSet);
     }
 
@@ -108,7 +107,6 @@ function CourseRating(props: any) {
                     {reactions && reactions.length > 0 ?
                     'Most Common Reactions' :
                     'No reactions yet'}
-                    
                 </h2>
                 <Row>
                     {loadingReactions ? 
@@ -132,7 +130,7 @@ function CourseRating(props: any) {
                                 <Col key={i + reaction[0] + reaction[1]}>
                                     <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: 'none' }}>
                                         <Card.Body>
-                                            {topGifs[i] ? <Gif gif={topGifs[i]} width={300} hideAttribution={true} noLink={true} /> : null}
+                                            {topGifs[i] ? <Image src={topGifs[i]} alt="reaction" fluid /> : null}
                                         </Card.Body>
                                         <Card.Body>
                                             Reactions: <strong>{reaction[1]}</strong>
