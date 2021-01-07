@@ -87,12 +87,13 @@ function CourseSelector(props: CourseSelectorProps) {
     }
 
     const listOfCompletedCourses = props.completedCourses.length && props.completedCourses.map((completedCourse, i) => {
-        const link = `https://www.handbook.unsw.edu.au${completedCourse.link}`;
+        const link = `/course/${completedCourse.course_code}/`;
+
         return (
             <Form.Row key={completedCourse.course_code + i}>
                 <Col>
                     <a style={{ textDecoration: 'none' }} href={link} target='_blank' rel="noopener noreferrer">
-                        <Button variant="secondary" block>
+                        <Button variant="secondary" block onClick={() => { trackEvent('Course Clicked', { course_code: completedCourse.course_code }) }}>
                                 {completedCourse.course_code}: {completedCourse.name}
                         </Button>
                     </a>
