@@ -1,36 +1,45 @@
-import { Jumbotron, Container, Row, Col, Card, Button, Toast, OverlayTrigger } from 'react-bootstrap';
+import { Jumbotron, Container, Row, Col, Card, Button, Toast } from 'react-bootstrap';
 import { Gif } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
 import { IGif } from '@giphy/js-types'
 
 // @ts-ignore
 import ReactGiphySearchbox from 'react-giphy-searchbox';
-import { addReaction, getReactions } from '../apiCalls';
+import { addReaction, getCourse, getReactions } from '../apiCalls';
 import { useEffect, useState } from 'react';
+import { Course } from '../types';
 
 const giphyKey = 'BppufVMMY118hX0xfjSv3KXzVKTebPKs';
 
-function CourseRating() {
+function CourseRating(props: any) {
     //==== State ====//
     const [reactions, setReactions] = useState<[string, number][] | null>(null);
     const [loadingReactions, setLoadingReactions] = useState(true);
 
     const [topGifs, setTopGifs] = useState<IGif[]>([]);
 
+    const [course, setCourse] = useState<Course | null>(null);
+
     const [showToast, setShowToast] = useState(false);
     //==== End State ====//
 
-    const course_code = "ECON3604";
+    const course_code = props.match.params.code.toUpperCase();
 
     /**
      * Set the gifs
      */
     useEffect(() => {
-        async function getReactionsFromDB() {
+        async function initialiseReactionsPage() {
             const reactions = await getReactions(course_code);
             await setGifsInState(reactions);
+
+            const course = await getCourse(course_code);
+            if (course.Item) {
+                setCourse(course.Item);
+            }
         }
-        getReactionsFromDB();
+        initialiseReactionsPage();
+        // eslint-disable-next-line
     }, [])
 
     /**
@@ -85,14 +94,17 @@ function CourseRating() {
         <>
             <Jumbotron fluid>
                 <Container>
-                    <h1>INFS1602</h1>
+                    <h1>{course_code}</h1>
                     <>
-                        Introduction to Business Programming
+                        {course?.name}
                     </>
                 </Container>
             </Jumbotron>
 
             <Container style={{ padding: '20px' }}>
+                <h2>
+                    Most Common Reactions
+                </h2>
                 <Row>
                     {loadingReactions ? 
                         <Col>
@@ -112,7 +124,7 @@ function CourseRating() {
                         reactions.map((reaction, i) => {
                             return (
                                 <Col key={i + reaction[0] + reaction[1]}>
-                                    <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Card style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: 'none' }}>
                                         <Card.Body>
                                             {topGifs[i] ? <Gif gif={topGifs[i]} width={300} hideAttribution={true} noLink={true} /> : null}
                                         </Card.Body>
