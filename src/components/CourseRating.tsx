@@ -1,7 +1,7 @@
 import { Jumbotron, Container, Row, Col, Card, Button, Toast } from 'react-bootstrap';
 import { Gif } from '@giphy/react-components';
 import { GiphyFetch } from '@giphy/js-fetch-api';
-import { IGif } from '@giphy/js-types'
+import { IGif } from '@giphy/js-types';
 
 // @ts-ignore
 import ReactGiphySearchbox from 'react-giphy-searchbox';
@@ -10,7 +10,8 @@ import { useEffect, useState } from 'react';
 import { Course } from '../types';
 import ralphSad from '../images/ralph.gif';
 
-const giphyKey = 'BppufVMMY118hX0xfjSv3KXzVKTebPKs';
+const config = require('../config/index.json');
+const giphyKey = config.GIPHY_TOKEN;
 
 function CourseRating(props: any) {
     //==== State ====//
