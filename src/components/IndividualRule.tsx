@@ -80,7 +80,7 @@ function Courses(props: CoursesProps) {
             <ListGroup variant="flush">
                 {props.rule.courses && props.rule.courses.map((course, i) => {
                     return (
-                        <Course course={course} index={i} tickClicked={props.tickClicked}/>
+                        <Course key={course.code + i} course={course} index={i} tickClicked={props.tickClicked}/>
                     )
                 })}
             </ListGroup>
@@ -245,7 +245,7 @@ function GetRatingOverlay(courseCode: string): ReactElement {
 
     return (
         <Popover id="popover-basic">
-            <Popover.Title style={{ textAlign: 'center' }} as="h3">Most Common Reaction to {courseCode}:</Popover.Title>
+            <Popover.Title style={{ textAlign: 'center' }} as="h3">Most Common Reaction to <strong>{courseCode}</strong>:</Popover.Title>
             <Popover.Content>
                 {loadingReactions ?
                     <Col>
@@ -258,7 +258,7 @@ function GetRatingOverlay(courseCode: string): ReactElement {
                         <Col>
                             <Image src={ralphSad} alt="No reactions yet" fluid />
                             <div style={{ textAlign: 'center' }}>
-                                No reactions yet, be the first to add one!
+                                No reactions yet, add the first one!
                             </div>
                         </Col>
                         :
