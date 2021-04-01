@@ -13,9 +13,10 @@ function App() {
       <NavBar />
       <Main />
       <footer style={{ textAlign: 'left', paddingLeft: '5px' }}>
-        <OverlayTrigger trigger="click" placement="right" overlay={popover}>
+        {/* <OverlayTrigger trigger="click" placement="right" overlay={popover}>
           <Button variant="success">New Features 🎉</Button>
-        </OverlayTrigger>
+        </OverlayTrigger> */}
+        <p><a href="https://www.buymeacoffee.com/syam" target="_blank" rel="noopener noreferrer">Buy me a coffee ☕ </a>&nbsp;&nbsp;</p>
       </footer>
       <footer style={{ textAlign: 'right' }}>
         <p>By <a href="https://github.com/Siyer2" target="_blank" rel="noopener noreferrer">Syam</a>&nbsp;&nbsp;</p>
